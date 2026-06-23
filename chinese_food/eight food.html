@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>八大菜系-川菜</title>
+		<style type="text/css">
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+			.header {
+				width: 100%;
+				height: 50px;
+				display: flex;
+				background-color: #a2a2a2;
+				position: relative;
+				z-index: 2;
+			}
+			.logol {
+				width: 200px;
+				list-style-type: none;
+				padding: 0;
+				margin: 2px 0px 2px 25px;
+				display: flex;
+				font-size: 30px;
+				text-shadow: 0px 0px 2px gainsboro;
+				justify-content: flex-start; 
+				color: black;
+			}
+			.nav{
+				height: 40px;
+				display: flex;
+				list-style-type: none;
+				margin: 3px 0px 3px 0px;
+				padding: 0;
+				flex:1;
+				font-size: 17px;
+				justify-content: flex-end;
+				align-items: center;
+			}
+			*{
+				margin: 0;
+				padding: 0;
+				text-decoration: none;
+				list-style: none;
+			}
+			.libt{
+				float: left;
+				width: 100px;
+				height: 40px;
+				text-align: center;
+				line-height: 40px;
+			}
+			.libt a{
+				color: #000000;
+				display: block;
+			}
+			.libt a:hover{
+				background: #a2a2a2;
+			}
+			.droplist{
+				background: #eee;
+				box-shadow: 0px 1px 2px #d3d3d3;
+				display: none;
+			}
+			.libt:hover .droplist{
+				display: block;
+			}
+			.droplist li{
+				border-top: 1px solid #ccc;
+			}
+			.droplist li:hover {
+				display: block;
+			}
+			.main {                   /*主体*/
+				height:1040px;
+				display: flex;
+				background-color: #fcfcfc;
+			}
+			.left {                        /*主体内的左边*/
+				width: 10%;
+				align-items: center;
+			}
+			.center {                     /*主体内的中间*/
+				width: 80%;
+				height:800px;
+			}
+			.first {
+				height: 45px;
+				display: flex;
+			}
+			.heng1 {
+				list-style-type: none;
+				padding: 0;
+				display: flex;
+				font-size: 35px;
+				justify-content: flex-start; 
+			}
+			.heng2 {
+				height: 40px;
+				display: flex;
+				margin: 15px 0px 0px 0px;
+				list-style-type: none;
+				padding: 0;
+				font-size: 20px;
+				justify-content: flex-end;
+			}
+			.Boundary {
+			  border-top: 2px dashed black;
+			}
+			.second {
+				height: 60px;
+				display: flex;
+				line-height: 80px;
+			}
+			.third {
+			}
+			.finth {
+				height: 300px;
+				border: 1px hidden #999;
+				float: none;
+				position: relative;
+				margin: 10px 10px 10px 10px;
+			}
+			.food {
+				width: 250px;
+				height: 250px;
+				border: 1px hidden #999;
+				float: none;
+				margin: 0px 40px 0px 40px;
+				display: inline-block;
+			}
+			.picture {
+				width: 250px;
+				height: 250px;
+				border-radius: 10px;
+			}
+			.word {
+				width: 250px;
+				height: 80px;
+				font-size: 20px;
+				border: 1px hidden #999;
+				float: none;
+				margin: 0px 30px 0px 30px;
+				display: inline-block;
+				text-align: center;
+			}
+			.right {                          /*主体内的右边*/
+				width: 10%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<div class="logol">中华美食网</div>
+			<div class="nav">
+				<ul class="ullist">
+					<li class="libt"><a href="chinese   food.html">首页</a></li>
+					<li class="libt"><a href="#">八大菜系</a>
+						<ul class="droplist">
+							<li><a href="eight food.html" >川菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E7%B2%A4%E8%8F%9C/306654">粤菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E5%BE%BD%E8%8F%9C?fromModule=lemma_search-box" >徽菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E9%B2%81%E8%8F%9C/458122" >鲁菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E9%97%BD%E8%8F%9C?fromModule=lemma_search-box" >闽菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E6%B1%9F%E8%8B%8F%E8%8F%9C?fromtitle=%E8%8B%8F%E8%8F%9C&fromid=1138373&fromModule=lemma_search-box">苏菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E6%B9%98%E8%8F%9C?fromModule=lemma_search-box" >湘菜</a></li>
+							<li><a href="https://baike.baidu.com/item/%E6%B5%99%E6%B1%9F%E8%8F%9C?fromModule=lemma_search-box" >浙江菜</a></li>
+						</ul>
+					</li>
+					<li class="libt"><a href="food festival.html">美食节日</a></li>
+					<li class="libt"><a href="#">用户相关</a>
+						<ul class="droplist">
+							<li><a href="在线留言.html" >在线留言</a></li>
+							<li><a href="饮食常识.html" >饮食常识</a></li>
+							<li><a href="user register.html" >用户注册</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="main">
+			<div class="left"></div>
+			<div class="center">
+				<div class="first">
+					<div class="heng1">
+						川菜
+					</div>
+					<div class="heng2">
+						(Sichuan Cuisine)
+					</div>
+				</div>
+				<div class="first">中国汉族传统的四大菜系之一、中国八大菜系之一</div>
+				<hr class="Boundary"/>
+				<div class="second">
+					<a style="font-size: 20px;">&#9660</a>
+					<a style="font-size: 25px;">来源</a>
+				</div>
+				<div class="third">
+					<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					川菜分为古代，近代，当代三个时期。</p>
+					<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					古代川菜，其存在时段为先秦的巴国和蜀国至清代的鸦片战争以前。
+					在这个时期，川菜经历了孕育萌芽，川菜菜系初步形成和成熟的发展时期。</p>
+					<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp近代川菜，时间段为清道光二十年（1840年）鸦片战争至1949年。
+					这一时期，川菜不断兼收并蓄，川菜菜系在清代后期最终形成，
+					成为中国主要的四大地方风味菜系之一，并在民国时期稳步发展。</p>
+					<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					当代川菜，时段为1949年中华人民共和国成立以后至20世纪初。
+					在这个时期，川菜在经历了曲折发展之后走上繁荣创新的跨越式发展之路。</p>
+				</div>
+				<div class="second">
+					<a style="font-size: 20px;">&#9660</a>
+					<a style="font-size:25px;">菜式特点</a>
+				</div>
+				<div class="third">
+					<p>&nbsp&nbsp&nbsp&nbsp主要由高级宴会菜式、普通宴会菜式、
+					大众便餐菜式和家常风味菜式四个部分组成。
+					四类菜式既各具风格特色，又互相渗透和配合，形成一个完整的体系，
+					对各地各阶层甚至对国外，都有广泛的适应性。</p>
+				</div>
+				<div class="second">
+					<a style="font-size: 20px;">&#9660</a>
+					<a style="font-size: 25px;">著名菜肴</a>
+				</div>
+				<div class="finth">
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E5%9B%9E%E9%94%85%E8%82%89/254670">
+							<div class="picture">
+								<img src="eight food/川菜/回锅肉.png" width="300" height="250"/>
+							</div>
+							<div class="word"><p>回锅肉</p></div>
+						</a>
+					</div>
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E6%B0%B4%E7%85%AE%E9%B1%BC/30972">
+							<div class="picture">
+								<img src="eight food/川菜/水煮鱼.png" width="300" height="250"/>
+							</div>
+							<div class="word"><p>水煮鱼</p></div>
+						</a>
+					</div>
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E9%B8%A1%E8%B1%86%E8%8A%B1?fromModule=lemma_search-box">
+							<div class="picture">
+								<img src="eight food/川菜/鸡豆花.jpg" width="300" height="250"/>
+							</div>
+							<div class="word"><p>鸡豆花</p></div>
+						</a>
+					</div>
+				</div>
+				<div class="finth">
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E5%AE%AB%E4%BF%9D%E9%B8%A1%E4%B8%81/1570">
+							<div class="picture">
+								<img src="eight food/川菜/宫保鸡丁.jpg" width="300" height="250"/>
+							</div>
+							<div class="word"><p>宫保鸡丁</p></div>
+						</a>
+					</div>
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E5%BC%80%E6%B0%B4%E7%99%BD%E8%8F%9C/1364425">
+							<div class="picture">
+								<img src="eight food/川菜/开水白菜.jpg" width="300" height="250"/>
+							</div>
+							<div class="word"><p>开水白菜</p></div>
+						</a>
+					</div>
+					<div class="food">
+						<a href="https://baike.baidu.com/item/%E5%BC%80%E6%B0%B4%E7%99%BD%E8%8F%9C/1364425">
+							<div class="picture">
+								<img src="eight food/川菜/麻婆豆腐.jpg" width="300" height="250"/>
+							</div>
+							<div class="word"><p>麻婆豆腐</p></div>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="right"></div>
+		</div>
+	</body>
+</html>
