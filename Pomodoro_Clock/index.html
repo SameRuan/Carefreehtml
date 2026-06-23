@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍅 智能番茄专注时钟（可调时长）</title>
+
+  <style>
+    /* ========== CSS 变量（主题切换） ========== */
+    :root {
+      --bg: #f5f0eb;
+      --card-bg: #ffffff;
+      --text: #2d2d2d;
+      --text-light: #6b6b6b;
+      --primary: #e74c3c;
+      --primary-hover: #c0392b;
+      --border: #ddd;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 20px;
+      --transition: 0.3s ease;
+    }
+    body.dark {
+      --bg: #1e1e2a;
+      --card-bg: #2a2a3a;
+      --text: #f0f0f0;
+      --text-light: #aaa;
+      --border: #444;
+      --shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    /* ========== 全局重置 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .app {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    /* ========== 卡片通用 ========== */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: background var(--transition), box-shadow var(--transition);
+      margin-bottom: 20px;
+    }
+
+    /* ========== 头部 ========== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 14px;
+      transition: 0.2s;
+      background: var(--card-bg);
+    }
+    .theme-toggle:hover {
+      opacity: 0.7;
+    }
+
+    /* ========== 计时器 ========== */
+    .timer-section {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .timer-display {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+    }
+    .timer-display svg {
+      transform: rotate(-90deg);
+      width: 200px;
+      height: 200px;
+    }
+    .timer-display .circle-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+    .timer-display .circle-progress {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+    .timer-task {
+      font-size: 18px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      min-height: 28px;
+    }
+
+    /* ========== 时间设置区域（新增） ========== */
+    .time-settings {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 20px;
+      background: var(--bg);
+      padding: 14px 20px;
+      border-radius: 40px;
+      transition: background var(--transition);
+    }
+    .time-settings label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    .time-settings input[type="number"] {
+      width: 60px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      transition: 0.2s;
+    }
+    .time-settings input[type="number"]:focus {
+      border-color: var(--primary);
+    }
+    .time-settings input[type="number"]::-webkit-inner-spin-button {
+      opacity: 1;
+    }
+    .time-settings .apply-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 14px;
+    }
+    .time-settings .apply-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ========== 控制按钮 ========== */
+    .timer-controls button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0 6px;
+      transition: 0.2s;
+      min-width: 100px;
+    }
+    .timer-controls button:hover {
+      background: var(--primary-hover);
+      transform: scale(0.97);
+    }
+    .timer-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .timer-controls button.reset-btn {
+      background: var(--border);
+      color: var(--text);
+    }
+    .timer-controls button.reset-btn:hover {
+      background: #bbb;
+    }
+
+    /* ========== 任务列表 ========== */
+    .task-section h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .task-input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .task-input-group input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+    .task-input-group input:focus {
+      border-color: var(--primary);
+    }
+    .task-input-group button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .task-input-group button:hover {
+      background: var(--primary-hover);
+    }
+    .task-list {
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .task-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: 0.15s;
+      border-radius: 8px;
+    }
+    .task-list li:hover {
+      background: var(--bg);
+    }
+    .task-list li .task-name {
+      flex: 1;
+      font-size: 16px;
+    }
+    .task-list li .task-actions button {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0 6px;
+      transition: 0.2s;
+    }
+    .task-list li .task-actions button:hover {
+      color: var(--primary);
+    }
+    .task-list .empty-msg {
+      color: var(--text-light);
+      text-align: center;
+      padding: 20px 0;
+      font-style: italic;
+    }
+
+    /* ========== 统计面板 ========== */
+    .stats-section {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      padding: 16px 20px;
+    }
+    .stats-section .stat-item {
+      flex: 1;
+    }
+    .stats-section .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stats-section .stat-label {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* ========== 滚动条美化 ========== */
+    .task-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .task-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+
+    /* ========== 响应式调整 ========== */
+    @media (max-width: 500px) {
+      .time-settings input[type="number"] {
+        width: 50px;
+        font-size: 14px;
+      }
+      .timer-controls button {
+        padding: 10px 20px;
+        font-size: 16px;
+        min-width: 80px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="app">
+      <!-- 头部 -->
+      <div class="header">
+        <h1>🍅 番茄时钟</h1>
+        <button class="theme-toggle" @click="toggleTheme">
+          {{ isDark ? '☀️ 明亮' : '🌙 暗黑' }}
+        </button>
+      </div>
+
+      <!-- 计时器卡片 -->
+      <div class="card timer-section">
+        <div class="timer-task">{{ currentTaskName || '选择一个任务开始' }}</div>
+
+        <!-- ===== 新增：时间设置 ===== -->
+        <div class="time-settings">
+          <label>⏱ 设置时长</label>
+          <input type="number" v-model.number="setHours" min="0" max="24" placeholder="时" />
+          <span>:</span>
+          <input type="number" v-model.number="setMinutes" min="0" max="59" placeholder="分" />
+          <span>:</span>
+          <input type="number" v-model.number="setSeconds" min="0" max="59" placeholder="秒" />
+          <button class="apply-btn" @click="applyTimeSettings">应用</button>
+        </div>
+
+        <div class="timer-display">
+          <svg viewBox="0 0 200 200">
+            <circle class="circle-bg" cx="100" cy="100" r="90" />
+            <circle class="circle-progress"
+              cx="100" cy="100" r="90"
+              :stroke-dasharray="circleCircumference"
+              :stroke-dashoffset="circleOffset"
+            />
+          </svg>
+          <div class="timer-text">{{ formattedTime }}</div>
+        </div>
+        <div class="timer-controls">
+          <button @click="startTimer" :disabled="isRunning || !currentTaskId">
+            {{ isRunning ? '运行中' : '▶ 开始' }}
+          </button>
+          <button @click="pauseTimer" :disabled="!isRunning">⏸ 暂停</button>
+          <button @click="resetTimer" class="reset-btn">↺ 重置</button>
+        </div>
+      </div>
+
+      <!-- 任务列表卡片 -->
+      <div class="card task-section">
+        <h2>📋 今日任务</h2>
+        <div class="task-input-group">
+          <input type="text" v-model="newTaskName" placeholder="输入新任务..." @keyup.enter="addTask" />
+          <button @click="addTask">添加</button>
+        </div>
+        <ul class="task-list">
+          <li v-for="task in tasks" :key="task.id" @click="selectTask(task)">
+            <span class="task-name" :style="{ textDecoration: task.completed ? 'line-through' : 'none' }">
+              {{ task.name }}
+            </span>
+            <span class="task-actions">
+              <button @click.stop="deleteTask(task.id)" title="删除任务">✕</button>
+            </span>
+          </li>
+          <li v-if="tasks.length === 0" class="empty-msg">还没有任务，添加一个吧！</li>
+        </ul>
+      </div>
+
+      <!-- 统计卡片 -->
+      <div class="card stats-section">
+        <div class="stat-item">
+          <div class="stat-number">{{ completedPomodoros }}</div>
+          <div class="stat-label">🍅 完成番茄</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ totalMinutes }}</div>
+          <div class="stat-label">⏱ 总专注分钟</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Vue 3 应用 ========== -->
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { createApp, ref, computed, watch, onMounted } from 'vue';
+
+    const app = createApp({
+      setup() {
+        // ---------- 状态 ----------
+        const tasks = ref([]);
+        const newTaskName = ref('');
+        const currentTaskId = ref(null);
+        const isRunning = ref(false);
+        const timeSeconds = ref(25 * 60); // 当前剩余秒数
+        const timerInterval = ref(null);
+        const isDark = ref(false);
+        const completedPomodoros = ref(0);
+        const totalMinutes = ref(0);
+
+        // ---- 新增：总时长（秒），初始25分钟 ----
+        const totalSeconds = ref(25 * 60);
+
+        // ---- 新增：用于输入框的时、分、秒 ----
+        const setHours = ref(0);
+        const setMinutes = ref(25);
+        const setSeconds = ref(0);
+
+        // ---------- 计算属性 ----------
+        const currentTask = computed(() => {
+          return tasks.value.find(t => t.id === currentTaskId.value) || null;
+        });
+        const currentTaskName = computed(() => {
+          return currentTask.value ? currentTask.value.name : '';
+        });
+
+        const formattedTime = computed(() => {
+          const mins = Math.floor(timeSeconds.value / 60);
+          const secs = timeSeconds.value % 60;
+          return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        });
+
+        const circleCircumference = 2 * Math.PI * 90; // r=90
+        const circleOffset = computed(() => {
+          // 使用 totalSeconds 作为分母
+          const progress = timeSeconds.value / totalSeconds.value;
+          return circleCircumference * (1 - progress);
+        });
+
+        // ---------- 辅助函数：根据总秒数更新输入框显示 ----------
+        const updateInputsFromTotal = () => {
+          const total = totalSeconds.value;
+          const hours = Math.floor(total / 3600);
+          const minutes = Math.floor((total % 3600) / 60);
+          const seconds = total % 60;
+          setHours.value = hours;
+          setMinutes.value = minutes;
+          setSeconds.value = seconds;
+        };
+
+        // ---------- 方法 ----------
+        // 添加任务
+        const addTask = () => {
+          const name = newTaskName.value.trim();
+          if (!name) return;
+          tasks.value.push({
+            id: Date.now(),
+            name,
+            completed: false,
+          });
+          newTaskName.value = '';
+          saveToLocal();
+        };
+
+        // 删除任务
+        const deleteTask = (id) => {
+          tasks.value = tasks.value.filter(t => t.id !== id);
+          if (currentTaskId.value === id) {
+            resetTimer();
+            currentTaskId.value = null;
+          }
+          saveToLocal();
+        };
+
+        // 选择任务
+        const selectTask = (task) => {
+          if (isRunning.value) return;
+          if (currentTaskId.value === task.id) return;
+          resetTimer();
+          currentTaskId.value = task.id;
+          timeSeconds.value = totalSeconds.value;
+        };
+
+        // ---- 新增：应用时间设置 ----
+        const applyTimeSettings = () => {
+          // 读取输入值
+          let h = setHours.value || 0;
+          let m = setMinutes.value || 0;
+          let s = setSeconds.value || 0;
+
+          // 边界限制（小时0~24，分钟0~59，秒0~59）
+          h = Math.min(24, Math.max(0, h));
+          m = Math.min(59, Math.max(0, m));
+          s = Math.min(59, Math.max(0, s));
+
+          // 如果小时=24，强制分钟和秒为0
+          if (h === 24) {
+            m = 0;
+            s = 0;
+          }
+
+          // 计算总秒数
+          let newTotal = h * 3600 + m * 60 + s;
+          // 确保至少1秒，最多86400秒（24小时）
+          newTotal = Math.min(86400, Math.max(1, newTotal));
+
+          // 更新总时长
+          totalSeconds.value = newTotal;
+          // 同步输入框显示（可能被修正过）
+          updateInputsFromTotal();
+
+          // 重置计时器
+          resetTimer();
+          // 将剩余时间设为新的总时长
+          timeSeconds.value = totalSeconds.value;
+
+          saveToLocal();
+        };
+
+        // 计时器控制
+        const startTimer = () => {
+          if (!currentTaskId.value) return;
+          if (isRunning.value) return;
+          if (timeSeconds.value <= 0) {
+            timeSeconds.value = totalSeconds.value;
+          }
+          isRunning.value = true;
+          timerInterval.value = setInterval(() => {
+            if (timeSeconds.value > 0) {
+              timeSeconds.value--;
+            }
+            if (timeSeconds.value === 0) {
+              clearInterval(timerInterval.value);
+              isRunning.value = false;
+              completedPomodoros.value++;
+              // 总分钟数累加时，使用实际总时长（分钟）
+              totalMinutes.value += Math.round(totalSeconds.value / 60);
+              const task = tasks.value.find(t => t.id === currentTaskId.value);
+              if (task) task.completed = true;
+              playSound();
+              if (Notification.permission === 'granted') {
+                new Notification('🍅 番茄完成！', { body: '休息一下吧～' });
+              }
+              // 重置剩余时间为总时长
+              timeSeconds.value = totalSeconds.value;
+              saveToLocal();
+            }
+          }, 1000);
+          saveToLocal();
+        };
+
+        const pauseTimer = () => {
+          if (timerInterval.value) {
+            clearInterval(timerInterval.value);
+            timerInterval.value = null;
+          }
+          isRunning.value = false;
+          saveToLocal();
+        };
+
+        const resetTimer = () => {
+          if (timerInterval.value) {
+            clearInterval(timerInterval.value);
+            timerInterval.value = null;
+          }
+          isRunning.value = false;
+          timeSeconds.value = totalSeconds.value;
+          saveToLocal();
+        };
+
+        // 声音
+        const playSound = () => {
+          try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 880;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.3;
+            oscillator.start();
+            setTimeout(() => {
+              oscillator.stop();
+            }, 300);
+          } catch (e) {
+            console.log('无法播放声音');
+          }
+        };
+
+        // 主题切换
+        const toggleTheme = () => {
+          isDark.value = !isDark.value;
+          document.body.classList.toggle('dark', isDark.value);
+          saveToLocal();
+        };
+
+        // ---------- 本地存储 ----------
+        const STORAGE_KEY = 'pomodoro_data';
+
+        const saveToLocal = () => {
+          const data = {
+            tasks: tasks.value,
+            currentTaskId: currentTaskId.value,
+            timeSeconds: timeSeconds.value,
+            isRunning: false, // 不持久化运行状态
+            isDark: isDark.value,
+            completedPomodoros: completedPomodoros.value,
+            totalMinutes: totalMinutes.value,
+            totalSeconds: totalSeconds.value, // 保存总时长
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        };
+
+        const loadFromLocal = () => {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          try {
+            const data = JSON.parse(raw);
+            tasks.value = data.tasks || [];
+            currentTaskId.value = data.currentTaskId || null;
+            timeSeconds.value = data.timeSeconds || 25 * 60;
+            isDark.value = data.isDark || false;
+            document.body.classList.toggle('dark', isDark.value);
+            completedPomodoros.value = data.completedPomodoros || 0;
+            totalMinutes.value = data.totalMinutes || 0;
+            // 恢复总时长，如果没有则默认25分钟
+            totalSeconds.value = data.totalSeconds || 25 * 60;
+            // 确保剩余时间不超过总时长
+            if (timeSeconds.value > totalSeconds.value) {
+              timeSeconds.value = totalSeconds.value;
+            }
+            isRunning.value = false;
+            // 更新输入框显示
+            updateInputsFromTotal();
+          } catch (e) {
+            console.warn('读取存储失败', e);
+          }
+        };
+
+        const requestNotification = () => {
+          if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+          }
+        };
+
+        // ---------- 生命周期 ----------
+        onMounted(() => {
+          loadFromLocal();
+          requestNotification();
+          if (!currentTaskId.value && tasks.value.length > 0) {
+            currentTaskId.value = tasks.value[0].id;
+          }
+          if (currentTaskId.value && !tasks.value.find(t => t.id === currentTaskId.value)) {
+            currentTaskId.value = null;
+          }
+          // 如果剩余时间无效，重置
+          if (timeSeconds.value <= 0 || timeSeconds.value > totalSeconds.value) {
+            timeSeconds.value = totalSeconds.value;
+          }
+        });
+
+        // 监听数据变化自动保存
+        watch([tasks, currentTaskId, timeSeconds, isDark, completedPomodoros, totalMinutes, totalSeconds], () => {
+          saveToLocal();
+        }, { deep: true });
+
+        // ---------- 返回 ----------
+        return {
+          tasks,
+          newTaskName,
+          currentTaskId,
+          currentTask,
+          currentTaskName,
+          isRunning,
+          timeSeconds,
+          formattedTime,
+          circleCircumference,
+          circleOffset,
+          isDark,
+          completedPomodoros,
+          totalMinutes,
+          // 新增的变量和方法
+          setHours,
+          setMinutes,
+          setSeconds,
+          applyTimeSettings,
+          addTask,
+          deleteTask,
+          selectTask,
+          startTimer,
+          pauseTimer,
+          resetTimer,
+          toggleTheme,
+        };
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>
