@@ -1,7 +1,5 @@
 ### 项目一：智能番茄时钟 (Smart Pomodoro)
 
-```markdown
-# 智能番茄时钟 (Smart Pomodoro)
 
 一款基于 Vue3 组合式 API 开发的智能番茄时钟应用，专注于核心逻辑封装、数据持久化与用户体验细节。
 
@@ -30,7 +28,7 @@ src/
 └── main.js          # 入口文件
 
 
-### 项目二：中华美食网 (Chinese Food Website)
+**### 项目二：中华美食网 (Chinese Food Website)**
 
 一个展示中国传统八大菜系及美食文化的前端静态网站项目。项目采用移动端优先策略，通过纯 CSS 实现网页。
 
